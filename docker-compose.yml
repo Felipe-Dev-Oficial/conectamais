@@ -1,9 +1,14 @@
 services:
   db:
-    image: mariadb:10.11
+    image: mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: aluno321
+      MYSQL_ROOT_PASSWORD: senha123
+      MYSQL_DATABASE: conectamais
+    volumes:
+      - C:\Users\Admin\Documents\meuprojeto-yii3\docker-compose\init.sql:/docker-entrypoint-initdb.d/init.sql
+      - mysql_data:/var/lib/mysql #persistencia de dados para localhost
+
 
   phpmyadmin:
     image: phpmyadmin
@@ -11,7 +16,9 @@ services:
     ports:
       - 8080:80
     environment:
-      - PMA_ARBITRARY=1
+      - PMA_HOST=db  # dxa o servidor pré-configurado, não precisa colocar db quando acessar
+    depends_on:
+      - db
   web:
     image: nginx
     volumes:
@@ -21,5 +28,6 @@ services:
       - "80:80"
       #porta 8085 --> porta do host/endpoint
       #porta 80 --> porta do container a ser acessado
-
+volumes:
+  mysql_data:
 
