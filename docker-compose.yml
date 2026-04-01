@@ -6,9 +6,8 @@ services:
       MYSQL_ROOT_PASSWORD: senha123
       MYSQL_DATABASE: conectamais
     volumes:
-      - C:\Users\Admin\Documents\meuprojeto-yii3\docker-compose\init.sql:/docker-entrypoint-initdb.d/init.sql
-      - mysql_data:/var/lib/mysql #persistencia de dados para localhost
-
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:rw
+      - mysql_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin
@@ -16,18 +15,17 @@ services:
     ports:
       - 8080:80
     environment:
-      - PMA_HOST=db  # dxa o servidor pré-configurado, não precisa colocar db quando acessar
+      - PMA_HOST=db
     depends_on:
       - db
+
   web:
     image: nginx
+    restart: always
     volumes:
       - ./meufrontend:/usr/share/nginx/html
-    # - C:\Users\Admin\Documents\docker-compose-nginx
     ports:
       - "80:80"
-      #porta 8085 --> porta do host/endpoint
-      #porta 80 --> porta do container a ser acessado
+
 volumes:
   mysql_data:
-
